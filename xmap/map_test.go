@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"code.byted.org/life_service/alliance_goods_goext/xslice"
-	"code.byted.org/life_service/alliance_goods_goext/xtype"
+	"github.com/minusli/gox/xslice"
+	"github.com/minusli/gox/xtype"
 )
 
 func TestValues(t *testing.T) {

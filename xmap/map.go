@@ -1,7 +1,7 @@
 package xmap
 
 import (
-	"code.byted.org/life_service/alliance_goods_goext/xtype"
+	"github.com/minusli/gox/xtype"
 )
 
 func Values[K xtype.Key, V any](m map[K]V) []V {

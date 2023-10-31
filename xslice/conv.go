@@ -1,8 +1,8 @@
 package xslice
 
 import (
-	"code.byted.org/life_service/alliance_goods_goext/xptr"
-	"code.byted.org/life_service/alliance_goods_goext/xtype"
+	"github.com/minusli/gox/xptr"
+	"github.com/minusli/gox/xtype"
 )
 
 func ConvTo[T any, U any](items []T, convFn func(T) U) []U {

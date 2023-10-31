@@ -1,7 +1,7 @@
 package xslice
 
 import (
-	"code.byted.org/life_service/alliance_goods_goext/xtype"
+	"github.com/minusli/gox/xtype"
 )
 
 func Contains[T any](items []T, target T, eq func(item T, target T) bool) bool {

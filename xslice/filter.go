@@ -1,7 +1,7 @@
 package xslice
 
 import (
-	"code.byted.org/life_service/alliance_goods_goext/xtype"
+	"github.com/minusli/gox/xtype"
 )
 
 func Filter[T any](items []T, filter func(T) bool) []T {

@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"code.byted.org/life_service/alliance_goods_goext/xptr"
+	"github.com/minusli/gox/xptr"
 )
 
 func TestFirst(t *testing.T) {

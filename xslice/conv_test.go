@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"testing"
 
-	"code.byted.org/life_service/alliance_goods_goext/xptr"
-	"code.byted.org/life_service/alliance_goods_goext/xtype"
+	"github.com/minusli/gox/xptr"
+	"github.com/minusli/gox/xtype"
 )
 
 func TestMap(t *testing.T) {

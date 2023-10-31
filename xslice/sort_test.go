@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"code.byted.org/life_service/alliance_goods_goext/xtype"
+	"github.com/minusli/gox/xtype"
 )
 
 func TestSort(t *testing.T) {
