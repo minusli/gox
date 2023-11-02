@@ -41,10 +41,11 @@ func FlatConvTo[T any, U any](items []T, flatFn func(T) []U) []U {
 	return retItems
 }
 
-func ConvToMap[K xtype.Key, V any](items []V, keyFn func(V) K) map[K]V {
+func ConvToMap[T any, K xtype.Key, V any](items []T, kvFn func(T) (K, V)) map[K]V {
 	retMap := make(map[K]V)
 	for _, item := range items {
-		retMap[keyFn(item)] = item
+		k, v := kvFn(item)
+		retMap[k] = v
 	}
 
 	return retMap
