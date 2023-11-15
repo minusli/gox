@@ -12,9 +12,10 @@ func TestFirst(t *testing.T) {
 		items []T
 	}
 	type testCase[T any] struct {
-		name    string
-		args    args[T]
-		wantRet T
+		name      string
+		args      args[T]
+		wantRet   T
+		wantPanic bool
 	}
 	testsForStrPtr := []testCase[*string]{
 		{
@@ -27,14 +28,14 @@ func TestFirst(t *testing.T) {
 			wantRet: xptr.ToPtr("a"),
 		},
 		{
-			name:    "StrPtr-blank",
-			args:    args[*string]{items: []*string{}},
-			wantRet: nil,
+			name:      "StrPtr-blank",
+			args:      args[*string]{items: []*string{}},
+			wantPanic: true,
 		},
 		{
-			name:    "StrPtr-nil",
-			args:    args[*string]{},
-			wantRet: nil,
+			name:      "StrPtr-nil",
+			args:      args[*string]{},
+			wantPanic: true,
 		},
 	}
 
@@ -49,18 +50,24 @@ func TestFirst(t *testing.T) {
 			wantRet: "a",
 		},
 		{
-			name:    "Str-blank",
-			args:    args[string]{items: []string{}},
-			wantRet: "",
+			name:      "Str-blank",
+			args:      args[string]{items: []string{}},
+			wantPanic: true,
 		},
 		{
-			name:    "Str-nil",
-			args:    args[string]{},
-			wantRet: "",
+			name:      "Str-nil",
+			args:      args[string]{},
+			wantPanic: true,
 		},
 	}
 	for _, tt := range testsForStrPtr {
 		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				if e := recover(); e != nil && !tt.wantPanic {
+					t.Errorf("First() panic = %v, wantPanic %v", e, tt.wantPanic)
+				}
+			}()
+
 			if gotRet := First(tt.args.items); !reflect.DeepEqual(gotRet, tt.wantRet) {
 				t.Errorf("First() = %v, want %v", gotRet, tt.wantRet)
 			}
@@ -68,6 +75,12 @@ func TestFirst(t *testing.T) {
 	}
 	for _, tt := range testsForStr {
 		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				if e := recover(); e != nil && !tt.wantPanic {
+					t.Errorf("First() panic = %v, wantPanic %v", e, tt.wantPanic)
+				}
+			}()
+
 			if gotRet := First(tt.args.items); !reflect.DeepEqual(gotRet, tt.wantRet) {
 				t.Errorf("First() = %v, want %v", gotRet, tt.wantRet)
 			}
@@ -80,9 +93,10 @@ func TestLast(t *testing.T) {
 		items []T
 	}
 	type testCase[T any] struct {
-		name    string
-		args    args[T]
-		wantRet T
+		name      string
+		args      args[T]
+		wantRet   T
+		wantPanic bool
 	}
 	testsForStrPtr := []testCase[*string]{
 		{
@@ -95,14 +109,14 @@ func TestLast(t *testing.T) {
 			wantRet: xptr.ToPtr("c"),
 		},
 		{
-			name:    "StrPtr-blank",
-			args:    args[*string]{items: []*string{}},
-			wantRet: nil,
+			name:      "StrPtr-blank",
+			args:      args[*string]{items: []*string{}},
+			wantPanic: true,
 		},
 		{
-			name:    "StrPtr-nil",
-			args:    args[*string]{},
-			wantRet: nil,
+			name:      "StrPtr-nil",
+			args:      args[*string]{},
+			wantPanic: true,
 		},
 	}
 
@@ -117,18 +131,24 @@ func TestLast(t *testing.T) {
 			wantRet: "c",
 		},
 		{
-			name:    "Str-blank",
-			args:    args[string]{items: []string{}},
-			wantRet: "",
+			name:      "Str-blank",
+			args:      args[string]{items: []string{}},
+			wantPanic: true,
 		},
 		{
-			name:    "Str-nil",
-			args:    args[string]{},
-			wantRet: "",
+			name:      "Str-nil",
+			args:      args[string]{},
+			wantPanic: true,
 		},
 	}
 	for _, tt := range testsForStrPtr {
 		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				if e := recover(); e != nil && !tt.wantPanic {
+					t.Errorf("Last() panic = %v, wantPanic %v", e, tt.wantPanic)
+				}
+			}()
+
 			if gotRet := Last(tt.args.items); !reflect.DeepEqual(gotRet, tt.wantRet) {
 				t.Errorf("Last() = %v, want %v", gotRet, tt.wantRet)
 			}
@@ -136,6 +156,12 @@ func TestLast(t *testing.T) {
 	}
 	for _, tt := range testsForStr {
 		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				if e := recover(); e != nil && !tt.wantPanic {
+					t.Errorf("Last() panic = %v, wantPanic %v", e, tt.wantPanic)
+				}
+			}()
+
 			if gotRet := Last(tt.args.items); !reflect.DeepEqual(gotRet, tt.wantRet) {
 				t.Errorf("Last() = %v, want %v", gotRet, tt.wantRet)
 			}
@@ -152,6 +178,7 @@ func TestMid(t *testing.T) {
 		args      args[T]
 		wantLeft  T
 		wantRight T
+		wantPanic bool
 	}
 	tests := []testCase[int]{
 		{
@@ -169,18 +196,22 @@ func TestMid(t *testing.T) {
 		{
 			name:      "int-blank",
 			args:      args[int]{items: []int{}},
-			wantLeft:  0,
-			wantRight: 0,
+			wantPanic: true,
 		},
 		{
 			name:      "int-nil",
 			args:      args[int]{},
-			wantLeft:  0,
-			wantRight: 0,
+			wantPanic: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				if e := recover(); e != nil && !tt.wantPanic {
+					t.Errorf("Mid() panic = %v, wantPanic %v", e, tt.wantPanic)
+				}
+			}()
+
 			gotLeft, gotRight := Mid(tt.args.items)
 			if !reflect.DeepEqual(gotLeft, tt.wantLeft) {
 				t.Errorf("Mid() gotLeft = %v, want %v", gotLeft, tt.wantLeft)

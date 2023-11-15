@@ -156,23 +156,23 @@ func TestFlatMap(t *testing.T) {
 	}
 }
 
-func TestToMap(t *testing.T) {
-	type args[V any, K xtype.Key] struct {
-		items  []V
-		getKey func(V) K
+func TestConvToMap(t *testing.T) {
+	type args[T any, V any, K xtype.Key] struct {
+		items  []T
+		kvFunc func(T) (K, V)
 	}
-	type testCase[V any, K xtype.Key] struct {
+	type testCase[T any, V any, K xtype.Key] struct {
 		name string
-		args args[V, K]
+		args args[T, V, K]
 		want map[K]V
 	}
-	tests := []testCase[string, string]{
+	tests := []testCase[string, string, string]{
 		{
 			name: "k=v=self",
-			args: args[string, string]{
+			args: args[string, string, string]{
 				items: []string{"a", "aa", "aaa"},
-				getKey: func(v string) string {
-					return v
+				kvFunc: func(v string) (string, string) {
+					return v, v
 				},
 			},
 			want: map[string]string{
@@ -183,10 +183,10 @@ func TestToMap(t *testing.T) {
 		},
 		{
 			name: "k=v=len",
-			args: args[string, string]{
+			args: args[string, string, string]{
 				items: []string{"a", "aa", "aaa"},
-				getKey: func(v string) string {
-					return strconv.FormatInt(int64(len(v)), 10)
+				kvFunc: func(v string) (string, string) {
+					return strconv.FormatInt(int64(len(v)), 10), v
 				},
 			},
 			want: map[string]string{
@@ -198,7 +198,7 @@ func TestToMap(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := ConvToMap(tt.args.items, tt.args.getKey); !reflect.DeepEqual(got, tt.want) {
+			if got := ConvToMap(tt.args.items, tt.args.kvFunc); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ToMap() = %v, want %v", got, tt.want)
 			}
 		})

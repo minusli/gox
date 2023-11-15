@@ -48,3 +48,9 @@ func SortNumber[T xtype.Number](items []T, options ...SortOption) []T {
 func SortString(items []string, options ...SortOption) []string {
 	return Sort(items, func(v1 string, v2 string) bool { return strings.Compare(v1, v2) < 0 }, options...)
 }
+
+func Reverse[T any](items []T) {
+	for i, j := 0, len(items)-1; i < j; i, j = i+1, j-1 {
+		items[i], items[j] = items[j], items[i]
+	}
+}

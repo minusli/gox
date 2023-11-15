@@ -126,3 +126,31 @@ func TestSortString(t *testing.T) {
 		})
 	}
 }
+
+func TestReverse(t *testing.T) {
+	type args[T any] struct {
+		items []T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
+		{
+			name: "ok",
+			args: args[int]{
+				items: []int{1, 5, 2, 5, 8, 3, 4},
+			},
+			want: []int{4, 3, 8, 5, 2, 5, 1},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			Reverse(tt.args.items)
+			if !reflect.DeepEqual(tt.args.items, tt.want) {
+				t.Errorf("Reverse() = %v, want %v", tt.args.items, tt.want)
+			}
+		})
+	}
+}
