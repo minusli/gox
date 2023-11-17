@@ -1,8 +1,6 @@
 package xslice
 
 import (
-	"reflect"
-
 	"github.com/minusli/gox/xtype"
 )
 
@@ -27,16 +25,8 @@ func FilterZero[T xtype.Number](items []T) []T {
 	})
 }
 
-func FilterNil[T any](items []T) []T {
-	if len(items) == 0 {
-		return items
-	}
-
-	if reflect.TypeOf(items[0]).Kind() != reflect.Pointer { // 非 ptr 直接返回
-		return items
-	}
-
-	return Filter(items, func(item T) bool {
+func FilterNil[T any](items []*T) []*T {
+	return Filter(items, func(item *T) bool {
 		return item != nil
 	})
 }
