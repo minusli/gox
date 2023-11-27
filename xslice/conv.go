@@ -1,11 +1,13 @@
 package xslice
 
 import (
+	"strings"
+
 	"github.com/minusli/gox/xptr"
 	"github.com/minusli/gox/xtype"
 )
 
-func ConvTo[T any, U any](items []T, convFn func(T) U) []U {
+func ConvTo[T any, U any](items []T, convFn func(item T) U) []U {
 	var retItems []U
 	for _, item := range items {
 		retItems = append(retItems, convFn(item))
@@ -29,6 +31,18 @@ func ConvToValue[T any](items []*T) []T {
 func ConvToPtr[T any](items []T) []*T {
 	return ConvTo(items, func(item T) *T {
 		return xptr.ToPtr(item)
+	})
+}
+
+func ConvToLower(items []string) []string {
+	return ConvTo(items, func(item string) string {
+		return strings.ToLower(item)
+	})
+}
+
+func ConvToUpper(items []string) []string {
+	return ConvTo(items, func(item string) string {
+		return strings.ToUpper(item)
 	})
 }
 

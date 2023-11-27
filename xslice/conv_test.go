@@ -204,3 +204,55 @@ func TestConvToMap(t *testing.T) {
 		})
 	}
 }
+
+func TestConvToLower(t *testing.T) {
+	type args struct {
+		items []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "ok",
+			args: args{
+				items: []string{"a", "A", "Aa", "aA"},
+			},
+			want: []string{"a", "a", "aa", "aa"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ConvToLower(tt.args.items); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ConvToLower() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestConvToUpper(t *testing.T) {
+	type args struct {
+		items []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "ok",
+			args: args{
+				items: []string{"a", "A", "Aa", "aA"},
+			},
+			want: []string{"A", "A", "AA", "AA"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ConvToUpper(tt.args.items); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ConvToUpper() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
