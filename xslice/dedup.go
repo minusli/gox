@@ -3,57 +3,33 @@ package xslice
 import (
 	"fmt"
 	"reflect"
+
+	"github.com/minusli/gox/xtype"
 )
 
-func Dedup[T any](items []T, opts ...Option[DedupOptions[T]]) []T {
+func DedupByKey[T any](items []T, key func(item T) string) []T {
 	if len(items) == 0 {
 		return items
 	}
 
-	opt := &DedupOptions[T]{}
-	for _, optFn := range opts {
-		optFn(opt)
-	}
-
-	if opt.keyFn == nil && opt.eqFn == nil {
-		switch reflect.ValueOf(items[0]).Kind() {
-		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
-			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
-			reflect.Float32, reflect.Float64, reflect.Pointer, reflect.String:
-			opt.keyFn = func(t T) string {
-				return fmt.Sprintf("%v", t)
-			}
-		default:
-			opt.eqFn = func(t T, t2 T) bool {
-				return reflect.DeepEqual(t, t2)
-			}
-		}
-	}
-
-	if opt.keyFn != nil {
-		return dedupByKey(items, opt.keyFn)
-	}
-
-	return dedupByEq(items, opt.eqFn)
-}
-
-func dedupByKey[T any](items []T, keyFn func(T) string) []T {
 	var ret []T
-
 	m := make(map[string]bool)
 	for _, item := range items {
-		if _, ok := m[keyFn(item)]; !ok {
+		if _, ok := m[key(item)]; !ok {
 			ret = append(ret, item)
-			m[keyFn(item)] = true
+			m[key(item)] = true
 		}
 	}
 
 	return ret
 }
 
-func dedupByEq[T any](items []T, eq func(T, T) bool) []T {
-	var ret []T
+func DedupByEq[T any](items []T, eq func(item1 T, item2 T) bool) []T {
+	if len(items) == 0 {
+		return items
+	}
 
+	var ret []T
 	for _, target := range items {
 		exists := false
 		for _, item := range ret {
@@ -68,4 +44,28 @@ func dedupByEq[T any](items []T, eq func(T, T) bool) []T {
 	}
 
 	return ret
+}
+
+func DedupString(items []string) []string {
+	return DedupByKey(items, func(item string) string {
+		return item
+	})
+}
+
+func DedupNumber[T xtype.Number](items []T) []T {
+	return DedupByKey(items, func(item T) string {
+		return fmt.Sprintf("%v", item)
+	})
+}
+
+func DedupPtr[T any](items []*T) []*T {
+	return DedupByKey(items, func(item *T) string {
+		return fmt.Sprintf("%v", item)
+	})
+}
+
+func DedupWithDeepEqual[T any](items []T) []T {
+	return DedupByEq(items, func(item1 T, item2 T) bool {
+		return reflect.DeepEqual(item1, item2)
+	})
 }

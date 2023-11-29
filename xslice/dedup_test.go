@@ -2,67 +2,62 @@ package xslice
 
 import (
 	"reflect"
-	"strconv"
 	"testing"
 
 	"github.com/minusli/gox/xptr"
+	"github.com/minusli/gox/xtype"
 )
 
-func TestDedup(t *testing.T) {
-	type args[T any] struct {
-		items []T
-		opts  []Option[DedupOptions[T]]
+func TestDedupString(t *testing.T) {
+	type args struct {
+		items []string
 	}
-	type testCase[T any] struct {
+	tests := []struct {
 		name string
-		want []T
-		args args[T]
-	}
-	tests := []testCase[string]{
+		args args
+		want []string
+	}{
 		{
 			name: "string-ok",
-			args: args[string]{
+			args: args{
 				items: []string{"a", "a", "b", "c", "a", "b", "c"},
 			},
 			want: []string{"a", "b", "c"},
 		},
 		{
 			name: "string-nil",
-			args: args[string]{
+			args: args{
 				items: nil,
 			},
 			want: nil,
 		},
 		{
-			name: "string-blank",
-			args: args[string]{
+			name: "string-empty",
+			args: args{
 				items: []string{},
 			},
 			want: []string{},
 		},
-		{
-			name: "string-with-keyFn",
-			args: args[string]{
-				items: []string{"a", "a", "b", "c", "a", "b", "c"},
-				opts: []Option[DedupOptions[string]]{WithDedupKeyFn(func(s string) string {
-					return s
-				})},
-			},
-			want: []string{"a", "b", "c"},
-		},
-		{
-			name: "string-with-eqFn",
-			args: args[string]{
-				items: []string{"a", "a", "b", "c", "a", "b", "c"},
-				opts: []Option[DedupOptions[string]]{WithDedupEqFn(func(item1, item2 string) bool {
-					return item1 == item2
-				})},
-			},
-			want: []string{"a", "b", "c"},
-		},
 	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DedupString(tt.args.items); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DedupString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
 
-	tests1 := []testCase[int]{
+func TestDedupNumber(t *testing.T) {
+	type args[T xtype.Number] struct {
+		items []T
+	}
+	type testCase[T xtype.Number] struct {
+		name string
+		args args[T]
+		want []T
+	}
+	tests := []testCase[int]{
 		{
 			name: "int-ok",
 			args: args[int]{
@@ -78,39 +73,85 @@ func TestDedup(t *testing.T) {
 			want: nil,
 		},
 		{
-			name: "int-blank",
+			name: "int-empty",
 			args: args[int]{
 				items: []int{},
 			},
 			want: []int{},
 		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DedupNumber(tt.args.items); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DedupNumber() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDedupPtr(t *testing.T) {
+	type args[T any] struct {
+		items []*T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []*T
+	}
+
+	ptr1 := xptr.ToPtr(1)
+	ptr2 := xptr.ToPtr(2)
+	ptr3 := xptr.ToPtr(3)
+	ptr4 := xptr.ToPtr(1)
+
+	tests := []testCase[int]{
 		{
-			name: "int-with-keyFn",
+			name: "ptr-int-ok",
 			args: args[int]{
-				items: []int{1, 1, 2, 3, 1, 2, 3},
-				opts: []Option[DedupOptions[int]]{WithDedupKeyFn(func(s int) string {
-					return strconv.FormatInt(int64(s), 10)
-				})},
+				items: []*int{ptr1, ptr1, ptr2, ptr3, ptr1, ptr2, ptr3, ptr4},
 			},
-			want: []int{1, 2, 3},
+			want: []*int{ptr1, ptr2, ptr3, ptr4},
 		},
 		{
-			name: "int-with-eqFn",
+			name: "ptr-int-nil",
 			args: args[int]{
-				items: []int{1, 1, 2, 3, 1, 2, 3},
-				opts: []Option[DedupOptions[int]]{WithDedupEqFn(func(item1, item2 int) bool {
-					return item1 == item2
-				})},
+				items: nil,
 			},
-			want: []int{1, 2, 3},
+			want: nil,
 		},
+		{
+			name: "ptr-int-empty",
+			args: args[int]{
+				items: []*int{},
+			},
+			want: []*int{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DedupPtr(tt.args.items); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DedupPtr() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDedupWithDeepEqual(t *testing.T) {
+
+	type args[T any] struct {
+		items []T
+	}
+	type testCase[T any] struct {
+		name string
+		args args[T]
+		want []T
 	}
 
 	type person struct {
 		name string
 	}
 
-	tests2 := []testCase[person]{
+	tests := []testCase[person]{
 		{
 			name: "struct-ok",
 			args: args[person]{
@@ -126,109 +167,17 @@ func TestDedup(t *testing.T) {
 			want: nil,
 		},
 		{
-			name: "struct-blank",
+			name: "struct-empty",
 			args: args[person]{
 				items: []person{},
 			},
 			want: []person{},
 		},
-		{
-			name: "struct-with-keyFn",
-			args: args[person]{
-				items: []person{{"1"}, {"1"}, {"2"}, {"3"}, {"1"}, {"2"}, {"3"}},
-				opts: []Option[DedupOptions[person]]{WithDedupKeyFn(func(s person) string {
-					return s.name
-				})},
-			},
-			want: []person{{"1"}, {"2"}, {"3"}},
-		},
-		{
-			name: "struct-with-eqFn",
-			args: args[person]{
-				items: []person{{"1"}, {"1"}, {"2"}, {"3"}, {"1"}, {"2"}, {"3"}},
-				opts: []Option[DedupOptions[person]]{WithDedupEqFn(func(item1, item2 person) bool {
-					return item1.name == item2.name
-				})},
-			},
-			want: []person{{"1"}, {"2"}, {"3"}},
-		},
 	}
-
-	ptr1 := xptr.ToPtr(1)
-	ptr2 := xptr.ToPtr(2)
-	ptr3 := xptr.ToPtr(3)
-
-	tests3 := []testCase[*int]{
-		{
-			name: "ptr-int-ok",
-			args: args[*int]{
-				items: []*int{ptr1, ptr1, ptr2, ptr3, ptr1, ptr2, ptr3},
-			},
-			want: []*int{ptr1, ptr2, ptr3},
-		},
-		{
-			name: "ptr-int-nil",
-			args: args[*int]{
-				items: nil,
-			},
-			want: nil,
-		},
-		{
-			name: "ptr-int-blank",
-			args: args[*int]{
-				items: []*int{},
-			},
-			want: []*int{},
-		},
-		{
-			name: "ptr-int-with-keyFn",
-			args: args[*int]{
-				items: []*int{ptr1, ptr1, ptr2, ptr3, ptr1, ptr2, ptr3},
-				opts: []Option[DedupOptions[*int]]{WithDedupKeyFn(func(s *int) string {
-					return strconv.FormatInt(int64(*s), 10)
-				})},
-			},
-			want: []*int{ptr1, ptr2, ptr3},
-		},
-		{
-			name: "ptr-int-with-eqFn",
-			args: args[*int]{
-				items: []*int{ptr1, ptr1, ptr2, ptr3, ptr1, ptr2, ptr3},
-				opts: []Option[DedupOptions[*int]]{WithDedupEqFn(func(item1, item2 *int) bool {
-					return *item1 == *item2
-				})},
-			},
-			want: []*int{ptr1, ptr2, ptr3},
-		},
-	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Dedup(tt.args.items, tt.args.opts...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Dedup() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-
-	for _, tt := range tests1 {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Dedup(tt.args.items, tt.args.opts...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Dedup() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-	for _, tt := range tests2 {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Dedup(tt.args.items, tt.args.opts...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Dedup() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-
-	for _, tt := range tests3 {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Dedup(tt.args.items, tt.args.opts...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Dedup() = %v, want %v", got, tt.want)
+			if got := DedupWithDeepEqual(tt.args.items); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DedupWithDeepEqual() = %v, want %v", got, tt.want)
 			}
 		})
 	}

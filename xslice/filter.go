@@ -4,7 +4,7 @@ import (
 	"github.com/minusli/gox/xtype"
 )
 
-func Filter[T any](items []T, filter func(T) bool) []T {
+func Filter[T any](items []T, filter func(item T) bool) []T {
 	if len(items) == 0 {
 		return items
 	}
@@ -31,8 +31,8 @@ func FilterNil[T any](items []*T) []*T {
 	})
 }
 
-func FilterBlank[T string | []byte](items []T) []T {
-	return Filter(items, func(s T) bool {
-		return len(s) == 0
+func FilterBlank(items []string) []string {
+	return Filter(items, func(item string) bool {
+		return item != ""
 	})
 }

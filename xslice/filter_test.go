@@ -92,3 +92,37 @@ func TestFilterNil(t *testing.T) {
 		})
 	}
 }
+
+func TestFilterBlank(t *testing.T) {
+	type args struct {
+		items []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "ok",
+			args: args{items: []string{"a", "b", "c", "", "d", ""}},
+			want: []string{"a", "b", "c", "d"},
+		},
+		{
+			name: "empty",
+			args: args{items: []string{}},
+			want: []string{},
+		},
+		{
+			name: "nil",
+			args: args{},
+			want: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := FilterBlank(tt.args.items); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("FilterBlank() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
