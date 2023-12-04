@@ -256,3 +256,57 @@ func TestConvToUpper(t *testing.T) {
 		})
 	}
 }
+
+func TestConvByTrim(t *testing.T) {
+	type args struct {
+		items  []string
+		cutset string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "ok",
+			args: args{
+				items:  []string{"/1", "2/", "/3/", "/4/4/", "///5///"},
+				cutset: "/",
+			},
+			want: []string{"1", "2", "3", "4/4", "5"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ConvByTrim(tt.args.items, tt.args.cutset); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ConvByTrim() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestConvByTrimSpace(t *testing.T) {
+	type args struct {
+		items []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "ok",
+			args: args{
+				items: []string{" 1", "2 ", " 3 ", " 4 4 ", "   5   "},
+			},
+			want: []string{"1", "2", "3", "4 4", "5"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ConvByTrimSpace(tt.args.items); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ConvByTrimSpace() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

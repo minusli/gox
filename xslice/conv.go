@@ -64,3 +64,13 @@ func ConvToMap[T any, K xtype.Key, V any](items []T, kvFn func(T) (K, V)) map[K]
 
 	return retMap
 }
+
+func ConvByTrim(items []string, cutset string) []string {
+	return ConvTo(items, func(item string) string {
+		return strings.Trim(item, cutset)
+	})
+}
+
+func ConvByTrimSpace(items []string) []string {
+	return ConvByTrim(items, " ")
+}
