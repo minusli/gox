@@ -1,18 +1,15 @@
 package xptr
 
-import (
-	"reflect"
-)
+func Val[T any](ptr *T) T {
+	var zero T
 
-func ToValue[T any](ptr *T) T {
 	if ptr == nil {
-		vt := reflect.TypeOf(ptr)
-		return reflect.New(vt.Elem()).Elem().Interface().(T)
+		return zero
 	}
 
 	return *ptr
 }
 
-func ToPtr[T any](value T) *T {
+func Ptr[T any](value T) *T {
 	return &value
 }

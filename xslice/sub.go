@@ -1,29 +1,53 @@
 package xslice
 
-func SubSlice[T any](items []T, start, end, step int) []T {
-	total := len(items)
+import (
+	"github.com/minusli/gox/xutils"
+)
+
+func Sub[T any](items []T, start, end, step int) []T {
+	var ret []T
 	if start < 0 {
-		start = 0
-	}
-	if start > total {
-		start = total
+		start += len(items)
 	}
 	if end < 0 {
-		end = total
+		end += len(items)
 	}
-	if end > total {
-		end = total
-	}
-	if step <= 0 {
+	if step == 0 {
 		step = 1
 	}
-	if start >= end {
-		return nil
+
+	if start < end && step > 0 {
+		for start = xutils.IFElse(start < 0, 0, start); start < end && start < len(items); start += step {
+			ret = append(ret, items[start])
+		}
+		return ret
 	}
 
-	var ret []T
-	for ; start < end; start += step {
-		ret = append(ret, items[start])
+	if start > end && step < 0 {
+		for start = xutils.IFElse(start >= len(items), len(items)-1, start); start > end && start >= 0; start += step {
+			ret = append(ret, items[start])
+		}
+		return ret
+	}
+
+	return ret
+}
+
+func Chunk[T any](items []T, size int) [][]T {
+	var ret [][]T
+
+	if size <= 0 {
+		size = 1
+	}
+
+	for idx, item := range items {
+		chunkIdx := idx / size
+
+		if chunkIdx >= len(ret) {
+			ret = append(ret, []T{})
+		}
+
+		ret[chunkIdx] = append(ret[chunkIdx], item)
 	}
 
 	return ret

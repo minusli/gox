@@ -31,14 +31,6 @@ func Invert[K xtype.Key, V xtype.Key](m map[K]V) map[V]K {
 	return ret
 }
 
-func FlatValues[K xtype.Key, V any](m map[K][]V) []V {
-	var items []V
-	for _, values := range m {
-		items = append(items, values...)
-	}
-	return items
-}
-
 func FlatInvert[K xtype.Key, V xtype.Key](m map[K][]V) map[V]K {
 	ret := make(map[V]K)
 	for k, vs := range m {

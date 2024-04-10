@@ -7,46 +7,26 @@ import (
 	"github.com/minusli/gox/xtype"
 )
 
-type _SortOption struct {
-	asc bool
-}
-
-type SortOption func(option *_SortOption)
-
-func ASCSortOption(option *_SortOption) {
-	option.asc = true
-}
-
-func DESCSortOption(option *_SortOption) {
-	option.asc = false
-}
-
-func Sort[T any](items []T, less func(T, T) bool, options ...SortOption) []T {
-
-	optional := &_SortOption{
-		asc: true,
-	}
-	for _, option := range options {
-		option(optional)
-	}
-
+func Sort[T any](items []T, less func(a, b T) bool) {
 	sort.Slice(items, func(i, j int) bool {
-		if optional.asc {
-			return less(items[i], items[j])
-		} else {
-			return !less(items[i], items[j])
-		}
+		return less(items[i], items[j])
 	})
-
-	return items
 }
 
-func SortNumber[T xtype.Number](items []T, options ...SortOption) []T {
-	return Sort(items, func(v1 T, v2 T) bool { return v1 < v2 }, options...)
+func SortStr(items []string, reverse bool) {
+	if reverse {
+		Sort(items, func(a string, b string) bool { return !(strings.Compare(a, b) < 0) })
+		return
+	}
+	Sort(items, func(a string, b string) bool { return strings.Compare(a, b) < 0 })
 }
 
-func SortString(items []string, options ...SortOption) []string {
-	return Sort(items, func(v1 string, v2 string) bool { return strings.Compare(v1, v2) < 0 }, options...)
+func SortNum[T xtype.Number](items []T, reverse bool) {
+	if reverse {
+		Sort(items, func(a T, b T) bool { return a >= b })
+		return
+	}
+	Sort(items, func(a T, b T) bool { return a < b })
 }
 
 func Reverse[T any](items []T) {
