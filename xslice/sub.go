@@ -1,9 +1,5 @@
 package xslice
 
-import (
-	"github.com/minusli/gox/xutils"
-)
-
 func Sub[T any](items []T, start, end, step int) []T {
 	var ret []T
 	if start < 0 {
@@ -17,14 +13,14 @@ func Sub[T any](items []T, start, end, step int) []T {
 	}
 
 	if start < end && step > 0 {
-		for start = xutils.IFElse(start < 0, 0, start); start < end && start < len(items); start += step {
+		for start = ifelse(start < 0, 0, start); start < end && start < len(items); start += step {
 			ret = append(ret, items[start])
 		}
 		return ret
 	}
 
 	if start > end && step < 0 {
-		for start = xutils.IFElse(start >= len(items), len(items)-1, start); start > end && start >= 0; start += step {
+		for start = ifelse(start >= len(items), len(items)-1, start); start > end && start >= 0; start += step {
 			ret = append(ret, items[start])
 		}
 		return ret
