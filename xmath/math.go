@@ -25,3 +25,14 @@ func Max[T xtype.Number](a T, others ...T) T {
 
 	return max
 }
+
+func Clamp[T xtype.Number](a, min, max T) T {
+	if a < min {
+		return min
+	}
+	if a > max {
+		return max
+	}
+
+	return a
+}
