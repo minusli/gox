@@ -41,3 +41,26 @@ func FlatInvert[K xtype.Key, V xtype.Key](m map[K][]V) map[V]K {
 
 	return ret
 }
+
+func Get[K xtype.Key, V any](m map[K]V, key K, default_ V) V {
+	val, exists := m[key]
+	if !exists {
+		return default_
+	}
+
+	return val
+}
+
+func GetIface[K xtype.Key, V any](m map[K]interface{}, key K, default_ V) V {
+	iface, exists := m[key]
+	if !exists {
+		return default_
+	}
+
+	val, ok := iface.(V)
+	if !ok {
+		return default_
+	}
+
+	return val
+}

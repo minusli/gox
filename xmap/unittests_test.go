@@ -30,4 +30,30 @@ func TestMap(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
+	t.Run("Get()#1", func(t *testing.T) {
+		if got := Get(map[string]int{"k": 1}, "k", 9); !reflect.DeepEqual(got, 1) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("Get()#1", func(t *testing.T) {
+		if got := Get(map[string]int{"k": 1}, "k1", 9); !reflect.DeepEqual(got, 9) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("GetIface()#1", func(t *testing.T) {
+		if got := GetIface(map[string]interface{}{"k": 1}, "k", 9); !reflect.DeepEqual(got, 1) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("GetIface()#2", func(t *testing.T) {
+		if got := GetIface(map[string]interface{}{"k": 1}, "k1", 9); !reflect.DeepEqual(got, 9) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("GetIface()#3", func(t *testing.T) {
+		if got := GetIface(map[string]interface{}{"k": 1}, "k", "v"); !reflect.DeepEqual(got, "v") {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+
 }
