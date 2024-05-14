@@ -31,3 +31,13 @@ func (m *Map[K, V]) Range(f func(key K, value V) bool) {
 		return f(key.(K), value.(V))
 	})
 }
+
+func (m *Map[K, V]) ToMap() map[K]V {
+	ret := make(map[K]V)
+	m.Range(func(key K, value V) bool {
+		ret[key] = value
+		return true
+	})
+
+	return ret
+}

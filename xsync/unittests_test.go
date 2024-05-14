@@ -47,26 +47,28 @@ func TestMap(t *testing.T) {
 	t.Run("Map()#1", func(t *testing.T) {
 		m := Map[int, int]{}
 		wg := WaitGroup{}
+		total := 100000
+		delTotal := 10000
 		wg.Go(func() error {
-			for i := 0; i < 100000; i++ {
+			for i := 0; i < total; i++ {
 				m.Put(i, i)
 			}
 			return nil
 		})
 		wg.Go(func() error {
-			for i := 0; i < 100000; i++ {
+			for i := 0; i < total; i++ {
 				m.Put(i, i)
 			}
 			return nil
 		})
 		wg.Go(func() error {
-			for i := 0; i < 10000; i++ {
+			for i := 0; i < delTotal; i++ {
 				m.Delete(i)
 			}
 			return nil
 		})
 		wg.Go(func() error {
-			for i := 0; i < 10000; i++ {
+			for i := 0; i < delTotal; i++ {
 				m.Delete(i)
 			}
 			return nil
@@ -80,7 +82,7 @@ func TestMap(t *testing.T) {
 			return nil
 		})
 		wg.Go(func() error {
-			for i := 0; i < 100000; i++ {
+			for i := 0; i < total; i++ {
 				if val, exists := m.Get(i); exists {
 					val += 1
 				}
@@ -90,25 +92,18 @@ func TestMap(t *testing.T) {
 
 		_ = wg.Wait()
 
-		wg.Go(func() error {
-			for i := 0; i < 10000; i++ {
-				m.Delete(i)
-			}
-			return nil
-		})
+		for i := 0; i < delTotal; i++ {
+			m.Delete(i)
+		}
 
+		got := m.ToMap()
 		want := map[int]int{}
-		got := map[int]int{}
-		for i := 10000; i < 100000; i++ {
+		for i := delTotal; i < total; i++ {
 			want[i] = i
 		}
-		m.Range(func(key int, value int) bool {
-			got[key] = value
-			return true
-		})
 
 		if !reflect.DeepEqual(got, want) {
-			t.Errorf("Map()#1 got = %v, want %v", got, want)
+			t.Errorf("Map()#1 got.len() = %v, want.len() %v", len(got), len(want))
 		}
 	})
 }
