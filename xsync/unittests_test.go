@@ -42,3 +42,73 @@ func TestWaitGroup(t *testing.T) {
 		}
 	})
 }
+
+func TestMap(t *testing.T) {
+	t.Run("Map()#1", func(t *testing.T) {
+		m := Map[int, int]{}
+		wg := WaitGroup{}
+		wg.Go(func() error {
+			for i := 0; i < 100000; i++ {
+				m.Put(i, i)
+			}
+			return nil
+		})
+		wg.Go(func() error {
+			for i := 0; i < 100000; i++ {
+				m.Put(i, i)
+			}
+			return nil
+		})
+		wg.Go(func() error {
+			for i := 0; i < 10000; i++ {
+				m.Delete(i)
+			}
+			return nil
+		})
+		wg.Go(func() error {
+			for i := 0; i < 10000; i++ {
+				m.Delete(i)
+			}
+			return nil
+		})
+		wg.Go(func() error {
+			m.Range(func(key int, value int) bool {
+				key += 1
+				value += 1
+				return true
+			})
+			return nil
+		})
+		wg.Go(func() error {
+			for i := 0; i < 100000; i++ {
+				if val, exists := m.Get(i); exists {
+					val += 1
+				}
+			}
+			return nil
+		})
+
+		_ = wg.Wait()
+
+		wg.Go(func() error {
+			for i := 0; i < 10000; i++ {
+				m.Delete(i)
+			}
+			return nil
+		})
+
+		want := map[int]int{}
+		got := map[int]int{}
+		for i := 10000; i < 100000; i++ {
+			want[i] = i
+		}
+		m.Range(func(key int, value int) bool {
+			got[key] = value
+			return true
+		})
+
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("Map()#1 got = %v, want %v", got, want)
+		}
+	})
+}
