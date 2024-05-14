@@ -3,6 +3,7 @@ package xsync
 import (
 	"errors"
 	"reflect"
+	"sort"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -105,5 +106,40 @@ func TestMap(t *testing.T) {
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("Map()#1 got.len() = %v, want.len() %v", len(got), len(want))
 		}
+	})
+}
+
+func TestSlice(t *testing.T) {
+	t.Run("Slice#1", func(t *testing.T) {
+		s := Slice[int]{}
+
+		wg := WaitGroup{}
+		total := 100000
+		wg.Go(func() error {
+			for i := 0; i < total; i++ {
+				s.Append(i)
+			}
+			return nil
+		})
+		wg.Go(func() error {
+			for i := 0; i < total; i++ {
+				s.Append(i)
+			}
+			return nil
+		})
+		_ = wg.Wait()
+
+		got := s.ToSlice()
+		var want []int
+		for i := 0; i < total; i++ {
+			want = append(want, i, i)
+		}
+
+		sort.Ints(got)
+		sort.Ints(want)
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("Map()#1 got.len() = %v, want.len() %v", len(got), len(want))
+		}
+
 	})
 }
