@@ -1,18 +1,33 @@
 package xerr
 
-type Error struct {
-	Code int64
-	Msg  string
-}
-
-func (e Error) Error() string {
-	return e.Msg
-}
-
 //goland:noinspection GoUnusedGlobalVariable
 var (
-	BadRequest          = Error{Code: 400, Msg: "bad request"}
-	Forbidden           = Error{Code: 403, Msg: "forbidden"}
-	NotFound            = Error{Code: 404, Msg: "not found"}
-	InternalServerError = Error{Code: 500, Msg: "internal server error"}
+	BadRequest          = &Error{code: 400, msg: "bad request"}
+	Forbidden           = &Error{code: 403, msg: "forbidden"}
+	NotFound            = &Error{code: 404, msg: "not found"}
+	InternalServerError = &Error{code: 500, msg: "internal server error"}
 )
+
+type Error struct {
+	code int64
+	msg  string
+}
+
+func (e *Error) Code() int64 {
+	return e.code
+}
+
+func (e *Error) Msg() string {
+	return e.msg
+}
+
+func (e *Error) Error() string {
+	return e.msg
+}
+
+func (e *Error) With(msg string) *Error {
+	return &Error{
+		code: e.code,
+		msg:  msg,
+	}
+}
