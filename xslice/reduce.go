@@ -12,7 +12,7 @@ func Reduce[T any, U any](items []T, reducer func(a T, result U) U, init U) U {
 	return init
 }
 
-func ReduceMap[T any, K xtype.Key, V any](items []T, kvFn func(a T) (K, V)) map[K]V {
+func ReduceMap[T any, K comparable, V any](items []T, kvFn func(a T) (K, V)) map[K]V {
 	return Reduce(items, func(item T, result map[K]V) map[K]V {
 		k, v := kvFn(item)
 		result[k] = v

@@ -8,7 +8,3 @@ type Number interface {
 type String interface {
 	string
 }
-
-type Key interface {
-	Number | String
-}

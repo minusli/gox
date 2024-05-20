@@ -26,7 +26,7 @@ func Distinct[T any](items []T, eq func(a, b T) bool) []T {
 	return ret
 }
 
-func DistinctByKey[T any, K xtype.Key](items []T, key func(a T) K) []T {
+func DistinctByKey[T any, K comparable](items []T, key func(a T) K) []T {
 	var ret []T
 
 	m := map[K]bool{}

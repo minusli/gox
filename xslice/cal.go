@@ -18,7 +18,7 @@ func Intersect[T any](items []T, others []T, eq func(a, b T) bool) []T {
 }
 
 // IntersectByKey 切片交集，使用 map 加速计算
-func IntersectByKey[T any, K xtype.Key](items []T, others []T, keyFn func(a T) K) []T {
+func IntersectByKey[T any, K comparable](items []T, others []T, keyFn func(a T) K) []T {
 	var ret []T
 
 	m := ReduceMap(others, func(a T) (K, T) { return keyFn(a), a })
@@ -55,7 +55,7 @@ func Diff[T any](items []T, others []T, eq func(a, b T) bool) []T {
 }
 
 // DiffByKey 切片交集，使用 map 加速计算
-func DiffByKey[T any, K xtype.Key](items []T, others []T, keyFn func(a T) K) []T {
+func DiffByKey[T any, K comparable](items []T, others []T, keyFn func(a T) K) []T {
 	var ret []T
 
 	m := ReduceMap(others, func(a T) (K, T) { return keyFn(a), a })
