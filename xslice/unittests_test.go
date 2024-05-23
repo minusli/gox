@@ -287,6 +287,16 @@ func TestMap(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
+	t.Run("MapString()#1", func(t *testing.T) {
+		if got := MapString([]int{1, 2, 3}); !reflect.DeepEqual(got, []string{"1", "2", "3"}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("MapString()#2", func(t *testing.T) {
+		if got := MapString([]float64{1.0, 2.22, 3.333}); !reflect.DeepEqual(got, []string{"1", "2.22", "3.333"}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
 }
 
 func TestReduce(t *testing.T) {

@@ -1,6 +1,7 @@
 package xslice
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/minusli/gox/xptr"
@@ -63,4 +64,10 @@ func Flat[T any](items [][]T) []T {
 	}
 
 	return ret
+}
+
+func MapString[T any](items []T) []string {
+	return Map(items, func(a T) string {
+		return fmt.Sprintf("%v", a)
+	})
 }
