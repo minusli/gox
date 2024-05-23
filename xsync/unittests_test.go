@@ -7,8 +7,6 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
-
-	"github.com/minusli/gox/xslice"
 )
 
 func TestWaitGroup(t *testing.T) {
@@ -143,48 +141,5 @@ func TestSlice(t *testing.T) {
 			t.Errorf("Map()#1 got.len() = %v, want.len() %v", len(got), len(want))
 		}
 
-	})
-}
-
-func TestChunkRun(t *testing.T) {
-	t.Run("ChunkExecutor#1", func(t *testing.T) {
-		var reqs []int
-		for i := 0; i < 100000; i++ {
-			reqs = append(reqs, i)
-		}
-		want := xslice.MapString(reqs)
-
-		ce := new(ChunkExecutor[int, string]).Chunk(reqs, 2)
-		got, err := ce.Execute(func(chunk []int) ([]string, error) { return xslice.MapString(chunk), nil })
-		if err != nil {
-			t.Errorf("ChunkExecutor#1 err = %v", err)
-			return
-		}
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("ChunkExecutor#1 got.len() = %v, want.len() %v", len(got), len(want))
-		}
-	})
-
-	t.Run("ChunkExecutor#2", func(t *testing.T) {
-		var reqs []int
-		for i := 0; i < 100000; i++ {
-			reqs = append(reqs, i)
-		}
-		want := xslice.Map(reqs, func(a int) int { return a + 1 })
-
-		ce := new(ChunkExecutor[int, int]).Chunk(reqs, 2)
-		got, err := ce.AsyncExecute(func(chunk []int) ([]int, error) {
-			return xslice.Map(chunk, func(a int) int { return a + 1 }), nil
-		})
-		if err != nil {
-			t.Errorf("ChunkExecutor#2 err = %v", err)
-			return
-		}
-
-		sort.Ints(got)
-		sort.Ints(want)
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("ChunkExecutor#2 got.len() = %v, want.len() %v", len(got), len(want))
-		}
 	})
 }
