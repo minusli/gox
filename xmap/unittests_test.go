@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/minusli/gox/xptr"
 	"github.com/minusli/gox/xslice"
 )
 
@@ -55,5 +56,49 @@ func TestMap(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-
+	t.Run("Map", func(t *testing.T) {
+		if got := Map(map[int]int{1: 1, 2: 2}, func(v int) int { return v + 1 }); !reflect.DeepEqual(got, map[int]int{1: 2, 2: 3}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("MapStr", func(t *testing.T) {
+		if got := MapStr(map[int]int{1: 1, 2: 2}); !reflect.DeepEqual(got, map[int]string{1: "1", 2: "2"}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("MapVal", func(t *testing.T) {
+		if got := MapVal(map[int]*int{1: xptr.Ptr(1), 2: xptr.Ptr(2)}); !reflect.DeepEqual(got, map[int]int{1: 1, 2: 2}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("MapPtr", func(t *testing.T) {
+		if got := MapPtr(map[int]int{1: 1, 2: 2}); !reflect.DeepEqual(got, map[int]*int{1: xptr.Ptr(1), 2: xptr.Ptr(2)}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("MapIface", func(t *testing.T) {
+		if got := MapIface(map[int]int{1: 1, 2: 2}); !reflect.DeepEqual(got, map[int]interface{}{1: 1, 2: 2}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("Filter", func(t *testing.T) {
+		if got := Filter(map[int]int{1: 1, 2: 2, 3: 3}, func(v int) bool { return v > 1 }); !reflect.DeepEqual(got, map[int]int{2: 2, 3: 3}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("FilterNil", func(t *testing.T) {
+		if got := FilterNil(map[int]*int{1: nil, 2: xptr.Ptr(2)}); !reflect.DeepEqual(got, map[int]*int{2: xptr.Ptr(2)}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("FilterBlank", func(t *testing.T) {
+		if got := FilterBlank(map[int]string{1: "", 2: "2"}); !reflect.DeepEqual(got, map[int]string{2: "2"}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("FilterZero", func(t *testing.T) {
+		if got := FilterZero(map[int]int{1: 0, 2: 2}); !reflect.DeepEqual(got, map[int]int{2: 2}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
 }

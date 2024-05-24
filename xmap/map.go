@@ -1,5 +1,12 @@
 package xmap
 
+import (
+	"fmt"
+
+	"github.com/minusli/gox/xptr"
+	"github.com/minusli/gox/xtype"
+)
+
 func Values[K comparable, V any](m map[K]V) []V {
 	var items []V
 	for _, value := range m {
@@ -59,4 +66,89 @@ func GetIface[K comparable, V any](m map[K]interface{}, key K, default_ V) V {
 	}
 
 	return val
+}
+
+func Map[K comparable, V any, VN any](m map[K]V, f func(V) VN) map[K]VN {
+	ret := make(map[K]VN, len(m))
+	for k, v := range m {
+		ret[k] = f(v)
+	}
+
+	return ret
+}
+
+func MapStr[K comparable, V1 any](m map[K]V1) map[K]string {
+	return Map(m, func(a V1) string {
+		return fmt.Sprintf("%v", a)
+	})
+}
+
+func MapVal[K comparable, V1 any](m map[K]*V1) map[K]V1 {
+	return Map(m, func(a *V1) V1 {
+		return xptr.Val(a)
+	})
+}
+
+func MapPtr[K comparable, V1 any](m map[K]V1) map[K]*V1 {
+	return Map(m, func(a V1) *V1 {
+		return xptr.Ptr(a)
+	})
+}
+
+func MapIface[K comparable, V1 any](m map[K]V1) map[K]interface{} {
+	return Map(m, func(a V1) interface{} {
+		return a
+	})
+}
+
+func Filter[K comparable, V any](m map[K]V, f func(V) bool) map[K]V {
+	ret := make(map[K]V)
+	for k, v := range m {
+		if !f(v) {
+			continue
+		}
+
+		ret[k] = v
+	}
+
+	return ret
+}
+
+func FilterNil[K comparable, V any](m map[K]*V) map[K]*V {
+	ret := make(map[K]*V)
+	for k, v := range m {
+		if v == nil {
+			continue
+		}
+
+		ret[k] = v
+	}
+
+	return ret
+}
+
+func FilterBlank[K comparable](m map[K]string) map[K]string {
+	ret := make(map[K]string)
+	for k, v := range m {
+		if v == "" {
+			continue
+		}
+
+		ret[k] = v
+	}
+
+	return ret
+}
+
+func FilterZero[K comparable, V xtype.Number](m map[K]V) map[K]V {
+	ret := make(map[K]V)
+	for k, v := range m {
+		if v == 0 {
+			continue
+		}
+
+		ret[k] = v
+	}
+
+	return ret
 }
