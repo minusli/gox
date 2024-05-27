@@ -310,6 +310,11 @@ func TestReduce(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
+	t.Run("ReduceMapSelf()#1", func(t *testing.T) {
+		if got := ReduceMapSelf([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, map[int]int{1: 1, 2: 2, 3: 3}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
 	t.Run("ReduceSum()#1", func(t *testing.T) {
 		if got := ReduceSum([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, 9) {
 			t.Errorf("unittest error: got = %v", got)

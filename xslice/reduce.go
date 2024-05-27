@@ -20,6 +20,13 @@ func ReduceMap[T any, K comparable, V any](items []T, kvFn func(a T) (K, V)) map
 	}, map[K]V{})
 }
 
+func ReduceMapSelf[T comparable](items []T) map[T]T {
+	return Reduce(items, func(item T, result map[T]T) map[T]T {
+		result[item] = item
+		return result
+	}, map[T]T{})
+}
+
 func ReduceSum[T xtype.Number](items []T) T {
 	return Reduce(items, func(a T, result T) T { return a + result }, 0)
 }
