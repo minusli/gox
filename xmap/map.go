@@ -152,3 +152,14 @@ func FilterZero[K comparable, V xtype.Number](m map[K]V) map[K]V {
 
 	return ret
 }
+
+func Merge[K comparable, V any](maps ...map[K]V) map[K]V {
+	ret := make(map[K]V)
+	for _, m := range maps {
+		for k, v := range m {
+			ret[k] = v
+		}
+	}
+
+	return ret
+}

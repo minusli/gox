@@ -101,4 +101,9 @@ func TestMap(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
+	t.Run("Merge", func(t *testing.T) {
+		if got := Merge(map[int]int{1: 1, 2: 2}, map[int]int{3: 3, 4: 4}, map[int]int{1: 5, 4: 5}); !reflect.DeepEqual(got, map[int]int{1: 5, 2: 2, 3: 3, 4: 5}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
 }
