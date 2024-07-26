@@ -22,8 +22,18 @@ func (m *Map[K, V]) Put(key K, val V) {
 	m.data.Store(key, val)
 }
 
-func (m *Map[K, V]) Delete(key K) {
-	m.data.Delete(key)
+func (m *Map[K, V]) Puts(maps ...map[K]V) {
+	for _, map_ := range maps {
+		for k, v := range map_ {
+			m.Put(k, v)
+		}
+	}
+}
+
+func (m *Map[K, V]) Delete(keys ...K) {
+	for _, key := range keys {
+		m.data.Delete(key)
+	}
 }
 
 func (m *Map[K, V]) Range(f func(key K, value V) bool) {
