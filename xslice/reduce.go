@@ -1,6 +1,8 @@
 package xslice
 
 import (
+	"fmt"
+
 	"github.com/minusli/gox/xtype"
 )
 
@@ -29,4 +31,20 @@ func ReduceMapSelf[T comparable](items []T) map[T]T {
 
 func ReduceSum[T xtype.Number](items []T) T {
 	return Reduce(items, func(a T, result T) T { return a + result }, 0)
+}
+
+func Join[T any](items []T, sep string) string {
+	if len(items) == 0 {
+		return ""
+	}
+	if len(items) == 1 {
+		return fmt.Sprintf("%v", items[0])
+	}
+
+	ret := fmt.Sprintf("%v", items[0])
+	for _, item := range items[1:] {
+		ret += sep + fmt.Sprintf("%v", item)
+	}
+	
+	return ret
 }

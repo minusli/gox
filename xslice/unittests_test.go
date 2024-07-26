@@ -320,6 +320,15 @@ func TestReduce(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
+	t.Run("Join()#1", func(t *testing.T) {
+		if got := Join([]int{1, 1, 2, 3, 2}, "-"); !reflect.DeepEqual(got, "1-1-2-3-2") {
+			t.Errorf("unittest 1 error: got = %v", got)
+		}
+
+		if got := Join([]interface{}{1, "hello", 2, "o", 2}, "-"); !reflect.DeepEqual(got, "1-hello-2-o-2") {
+			t.Errorf("unittest 2 error: got = %v", got)
+		}
+	})
 }
 
 func TestSort(t *testing.T) {
