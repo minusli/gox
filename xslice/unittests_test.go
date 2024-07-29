@@ -315,8 +315,11 @@ func TestReduce(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("ReduceSum()#1", func(t *testing.T) {
-		if got := ReduceSum([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, 9) {
+	t.Run("Sum()", func(t *testing.T) {
+		if got := Sum([]int{}); !reflect.DeepEqual(got, 0) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Sum([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, 9) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
@@ -327,6 +330,39 @@ func TestReduce(t *testing.T) {
 
 		if got := Join([]interface{}{1, "hello", 2, "o", 2}, "-"); !reflect.DeepEqual(got, "1-hello-2-o-2") {
 			t.Errorf("unittest 2 error: got = %v", got)
+		}
+	})
+	t.Run("Max()", func(t *testing.T) {
+		if got := Max([]int{}); !reflect.DeepEqual(got, 0) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Max([]int{1}); !reflect.DeepEqual(got, 1) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Max([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, 3) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("Min()", func(t *testing.T) {
+		if got := Min([]int{}); !reflect.DeepEqual(got, 0) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Min([]int{1}); !reflect.DeepEqual(got, 1) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Min([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, 1) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("Avg()", func(t *testing.T) {
+		if got := Avg([]int{}); !reflect.DeepEqual(got, 0.0) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Avg([]int{1}); !reflect.DeepEqual(got, 1.0) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Avg([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, 1.8) {
+			t.Errorf("unittest error: got = %v", got)
 		}
 	})
 }

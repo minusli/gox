@@ -29,8 +29,13 @@ func ReduceMapSelf[T comparable](items []T) map[T]T {
 	}, map[T]T{})
 }
 
-func ReduceSum[T xtype.Number](items []T) T {
-	return Reduce(items, func(a T, result T) T { return a + result }, 0)
+func Sum[T xtype.Number](items []T) T {
+	var sum T = 0
+	for _, item := range items {
+		sum += item
+	}
+
+	return sum
 }
 
 func Join[T any](items []T, sep string) string {
@@ -45,6 +50,50 @@ func Join[T any](items []T, sep string) string {
 	for _, item := range items[1:] {
 		ret += sep + fmt.Sprintf("%v", item)
 	}
-	
+
 	return ret
+}
+
+func Max[T xtype.Number](items []T) T {
+	if len(items) == 0 {
+		return 0
+	}
+	if len(items) == 0 {
+		return items[0]
+	}
+
+	max := items[0]
+	for _, item := range items[1:] {
+		if item > max {
+			max = item
+		}
+	}
+
+	return max
+}
+
+func Min[T xtype.Number](items []T) T {
+	if len(items) == 0 {
+		return 0
+	}
+	if len(items) == 0 {
+		return items[0]
+	}
+
+	min := items[0]
+	for _, item := range items[1:] {
+		if item < min {
+			min = item
+		}
+	}
+
+	return min
+}
+
+func Avg[T xtype.Number](items []T) float64 {
+	if len(items) == 0 {
+		return 0
+	}
+
+	return float64(Sum(items)) / float64(len(items))
 }
