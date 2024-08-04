@@ -3,31 +3,30 @@ package xshortcut
 import (
 	"github.com/minusli/gox/xslice"
 	"github.com/minusli/gox/xsync"
-	"github.com/minusli/gox/xtype"
 )
 
-type MGet[ID xtype.ID, T any] struct {
+type MGet[K comparable, T any] struct {
 	chunk    int
 	parallel bool
 }
 
-func (mget *MGet[ID, T]) Chunk(size int) *MGet[ID, T] {
+func (mget *MGet[K, T]) Chunk(size int) *MGet[K, T] {
 	mget.chunk = size
 	return mget
 }
 
-func (mget *MGet[ID, T]) Parallel() *MGet[ID, T] {
+func (mget *MGet[K, T]) Parallel() *MGet[K, T] {
 	mget.parallel = true
 	return mget
 }
 
-func (mget *MGet[ID, T]) Do(ids []ID, get func(chunk []ID) (map[ID]T, error)) (map[ID]T, error) {
+func (mget *MGet[K, T]) Do(ids []K, get func(chunk []K) (map[K]T, error)) (map[K]T, error) {
 	if mget.chunk <= 0 {
 		return get(ids)
 	}
 
 	if mget.parallel {
-		ret := xsync.Map[ID, T]{}
+		ret := xsync.Map[K, T]{}
 		wg := xsync.WaitGroup{}
 		for _, chunk := range xslice.Chunk(ids, mget.chunk) {
 			_chunk := chunk
@@ -51,7 +50,7 @@ func (mget *MGet[ID, T]) Do(ids []ID, get func(chunk []ID) (map[ID]T, error)) (m
 		return ret.ToMap(), nil
 
 	} else {
-		ret := map[ID]T{}
+		ret := map[K]T{}
 		for _, chunk := range xslice.Chunk(ids, mget.chunk) {
 			kv, err := get(chunk)
 			if err != nil {
