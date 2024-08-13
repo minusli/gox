@@ -114,4 +114,9 @@ func TestMap(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
+	t.Run("MapKV", func(t *testing.T) {
+		if got := MapKV(map[int]int{1: 1, 2: 2}, func(k, v int) (int, int) { return k + 2, v + 3 }); !reflect.DeepEqual(got, map[int]int{3: 4, 4: 5}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
 }

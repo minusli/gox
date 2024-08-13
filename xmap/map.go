@@ -168,3 +168,13 @@ func Exists[K comparable, V any](m map[K]V, key K) bool {
 	_, exists := m[key]
 	return exists
 }
+
+func MapKV[K comparable, V any, K1 comparable, V1 any](m map[K]V, f func(K, V) (K1, V1)) map[K1]V1 {
+	ret := make(map[K1]V1)
+	for k, v := range m {
+		k1, v1 := f(k, v)
+		ret[k1] = v1
+	}
+
+	return ret
+}
