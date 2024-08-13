@@ -163,3 +163,8 @@ func Merge[K comparable, V any](maps ...map[K]V) map[K]V {
 
 	return ret
 }
+
+func Exists[K comparable, V any](m map[K]V, key K) bool {
+	_, exists := m[key]
+	return exists
+}

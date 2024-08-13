@@ -106,4 +106,12 @@ func TestMap(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
+	t.Run("Exists", func(t *testing.T) {
+		if got := Exists(map[int]int{1: 1, 2: 2}, 1); !reflect.DeepEqual(got, true) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Exists(map[int]int{1: 1, 2: 2}, 0); !reflect.DeepEqual(got, false) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
 }
