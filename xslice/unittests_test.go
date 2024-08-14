@@ -454,3 +454,40 @@ func TestZip(t *testing.T) {
 		}
 	})
 }
+
+func TestMake(t *testing.T) {
+	t.Run("TestMake()#1", func(t *testing.T) {
+		if got := Make(3); !reflect.DeepEqual(got, []int{0, 1, 2}) {
+			t.Errorf("ugunittest error: got = %v", got)
+		}
+		if got := Make(1, 3); !reflect.DeepEqual(got, []int{1, 2}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Make(1, 3, 2); !reflect.DeepEqual(got, []int{1}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+
+		if got := Make(); got != nil {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Make(0); got != nil {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Make(-1); got != nil {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Make(1, 1); got != nil {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Make(2, 1); got != nil {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Make(1, 2, 0); got != nil {
+			t.Errorf("unittest error: got = %v", got)
+		}
+		if got := Make(1, 2, -1); got != nil {
+			t.Errorf("unittest error: got = %v", got)
+		}
+
+	})
+}
