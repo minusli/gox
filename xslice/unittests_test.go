@@ -442,3 +442,15 @@ func TestSub(t *testing.T) {
 		}
 	})
 }
+
+func TestZip(t *testing.T) {
+	t.Run("Zip()#1", func(t *testing.T) {
+		if got := Zip([]int{1, 2, 3}, []string{"a", "b", "c"}); !reflect.DeepEqual(got, map[int]string{1: "a", 2: "b", 3: "c"}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+
+		if got := Zip([]int{1, 2}, []string{"a", "b", "c"}); !reflect.DeepEqual(got, map[int]string{}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+}
