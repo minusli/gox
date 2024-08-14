@@ -1,6 +1,7 @@
-package xshortcut
+package xget
 
 import (
+	"context"
 	"reflect"
 	"testing"
 
@@ -8,16 +9,16 @@ import (
 )
 
 func TestMGet(t *testing.T) {
+	ctx := context.Background()
 	t.Run("不分片&不并发", func(t *testing.T) {
 		var ids []int
 		for i := 0; i < 100000; i++ {
 			ids = append(ids, i)
 		}
-		want := xslice.ReduceMap(ids, func(a int) (int, int) { return a, a })
+		want := xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a })
 
-		mget := new(MGet[int, int])
-		got, err := mget.Do(ids, func(chunk []int) (map[int]int, error) {
-			return xslice.ReduceMap(chunk, func(a int) (int, int) { return a, a }), nil
+		got, err := MGet(ctx, ids, func(ctx context.Context, ids []int) (map[int]*int, error) {
+			return xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a }), nil
 		})
 
 		if err != nil {
@@ -34,12 +35,11 @@ func TestMGet(t *testing.T) {
 		for i := 0; i < 100000; i++ {
 			ids = append(ids, i)
 		}
-		want := xslice.ReduceMap(ids, func(a int) (int, int) { return a, a })
+		want := xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a })
 
-		mget := new(MGet[int, int]).Chunk(2)
-		got, err := mget.Do(ids, func(chunk []int) (map[int]int, error) {
-			return xslice.ReduceMap(chunk, func(a int) (int, int) { return a, a }), nil
-		})
+		got, err := MGet(ctx, ids, func(ctx context.Context, ids []int) (map[int]*int, error) {
+			return xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a }), nil
+		}, WithChunk(2))
 
 		if err != nil {
 			t.Errorf("TestMGet#2 err = %v", err)
@@ -55,12 +55,11 @@ func TestMGet(t *testing.T) {
 		for i := 0; i < 100000; i++ {
 			ids = append(ids, i)
 		}
-		want := xslice.ReduceMap(ids, func(a int) (int, int) { return a, a })
+		want := xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a })
 
-		mget := new(MGet[int, int]).Chunk(2).Parallel()
-		got, err := mget.Do(ids, func(chunk []int) (map[int]int, error) {
-			return xslice.ReduceMap(chunk, func(a int) (int, int) { return a, a }), nil
-		})
+		got, err := MGet(ctx, ids, func(ctx context.Context, ids []int) (map[int]*int, error) {
+			return xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a }), nil
+		}, WithChunk(2), WithParallel())
 
 		if err != nil {
 			t.Errorf("TestMGet#3 err = %v", err)

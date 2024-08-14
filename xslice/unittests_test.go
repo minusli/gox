@@ -437,7 +437,7 @@ func TestSub(t *testing.T) {
 		}
 	})
 	t.Run("Chunk()#2", func(t *testing.T) {
-		if got := Chunk([]int{1, 2, 3, 4, 5, 6, 7, 8}, -1); !reflect.DeepEqual(got, [][]int{{1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}}) {
+		if got := Chunk([]int{1, 2, 3, 4, 5, 6, 7, 8}, -1); !reflect.DeepEqual(got, [][]int{{1, 2, 3, 4, 5, 6, 7, 8}}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})

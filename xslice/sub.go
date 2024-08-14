@@ -33,7 +33,7 @@ func Chunk[T any](items []T, size int) [][]T {
 	var ret [][]T
 
 	if size <= 0 {
-		size = 1
+		return [][]T{items}
 	}
 
 	for idx, item := range items {
