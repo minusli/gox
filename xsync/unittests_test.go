@@ -12,7 +12,7 @@ import (
 func TestWaitGroup(t *testing.T) {
 	t.Run("WaitGroup()#1", func(t *testing.T) {
 		count := int32(0)
-		wg := WaitGroup{}
+		wg := WaitGroup{Parallel: make(chan bool, 50)}
 		for i := 0; i < 1000; i++ {
 			wg.Go(func() error {
 				time.Sleep(1 * time.Second)
