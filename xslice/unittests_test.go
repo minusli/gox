@@ -58,44 +58,40 @@ func TestCal(t *testing.T) {
 
 func TestContain(t *testing.T) {
 	t.Run("Contains()#1", func(t *testing.T) {
-		if got := Contains([]int{1, 1, 2, 2, 3, 3}, 1, func(a, b int) bool { return a == b }); !reflect.DeepEqual(got, true) {
+		if got := Contains([]int{1, 1, 2, 2, 3, 3}, 1); !reflect.DeepEqual(got, true) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
 	t.Run("Contains()#2", func(t *testing.T) {
-		if got := Contains([]int{1, 1, 2, 2, 3, 3}, 4, func(a, b int) bool { return a == b }); !reflect.DeepEqual(got, false) {
+		if got := Contains([]int{1, 1, 2, 2, 3, 3}, 4); !reflect.DeepEqual(got, false) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("ContainsStr()#1", func(t *testing.T) {
-		if got := ContainsStr([]string{"1", "1", "2", "2", "3", "3"}, "1"); !reflect.DeepEqual(got, true) {
+	t.Run("Contains()#3", func(t *testing.T) {
+		if got := Contains([]string{"1", "1", "2", "2", "3", "3"}, "1"); !reflect.DeepEqual(got, true) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("ContainsStr()#2", func(t *testing.T) {
-		if got := ContainsStr([]string{"1", "1", "2", "2", "3", "3"}, "4"); !reflect.DeepEqual(got, false) {
+	t.Run("Contains#4", func(t *testing.T) {
+		if got := Contains([]string{"1", "1", "2", "2", "3", "3"}, "4"); !reflect.DeepEqual(got, false) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("ContainsNum()#1", func(t *testing.T) {
-		if got := ContainsNum([]int{1, 1, 2, 2, 3, 3}, 1); !reflect.DeepEqual(got, true) {
-			t.Errorf("unittest error: got = %v", got)
-		}
-	})
-	t.Run("ContainsNum()#2", func(t *testing.T) {
-		if got := ContainsNum([]int{1, 1, 2, 2, 3, 3}, 4); !reflect.DeepEqual(got, false) {
-			t.Errorf("unittest error: got = %v", got)
-		}
-	})
-	t.Run("ContainsPtr()#1", func(t *testing.T) {
+	t.Run("Contains()#5", func(t *testing.T) {
 		a, b, c := xptr.Ptr(1), xptr.Ptr(2), xptr.Ptr(3)
-		if got := ContainsPtr([]*int{a, b, c}, a); !reflect.DeepEqual(got, true) {
+		if got := Contains([]*int{a, b, c}, a); !reflect.DeepEqual(got, true) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("ContainsPtr()#2", func(t *testing.T) {
+	t.Run("Contains()#6", func(t *testing.T) {
 		a, b, c := xptr.Ptr(1), xptr.Ptr(2), xptr.Ptr(3)
-		if got := ContainsPtr([]*int{a, b, c}, xptr.Ptr(1)); !reflect.DeepEqual(got, false) {
+		if got := Contains([]*int{a, b, c}, xptr.Ptr(1)); !reflect.DeepEqual(got, false) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("Contains()#7", func(t *testing.T) {
+		a, b, c := xptr.Ptr(1), xptr.Ptr(2), xptr.Ptr(3)
+		if got := ContainsWithDeepEqual([]*int{a, b, c}, xptr.Ptr(1)); !reflect.DeepEqual(got, true) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})

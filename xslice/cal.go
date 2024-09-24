@@ -9,7 +9,7 @@ func Intersect[T any](items []T, others []T, eq func(a, b T) bool) []T {
 	var ret []T
 
 	for _, item := range items {
-		if Contains(others, item, eq) {
+		if ContainsAny(others, item, eq) {
 			ret = append(ret, item)
 		}
 	}
@@ -46,7 +46,7 @@ func Diff[T any](items []T, others []T, eq func(a, b T) bool) []T {
 	var ret []T
 
 	for _, item := range items {
-		if !Contains(others, item, eq) {
+		if !ContainsAny(others, item, eq) {
 			ret = append(ret, item)
 		}
 	}
