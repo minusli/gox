@@ -57,39 +57,39 @@ func TestCal(t *testing.T) {
 }
 
 func TestContain(t *testing.T) {
-	t.Run("Contains()#1", func(t *testing.T) {
+	t.Run("Contains:int:found", func(t *testing.T) {
 		if got := Contains([]int{1, 1, 2, 2, 3, 3}, 1); !reflect.DeepEqual(got, true) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Contains()#2", func(t *testing.T) {
+	t.Run("Contains:int:not_found", func(t *testing.T) {
 		if got := Contains([]int{1, 1, 2, 2, 3, 3}, 4); !reflect.DeepEqual(got, false) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Contains()#3", func(t *testing.T) {
+	t.Run("Contains:str:found", func(t *testing.T) {
 		if got := Contains([]string{"1", "1", "2", "2", "3", "3"}, "1"); !reflect.DeepEqual(got, true) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Contains#4", func(t *testing.T) {
+	t.Run("Contains:str:not_found", func(t *testing.T) {
 		if got := Contains([]string{"1", "1", "2", "2", "3", "3"}, "4"); !reflect.DeepEqual(got, false) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Contains()#5", func(t *testing.T) {
+	t.Run("Contains:ptr:found", func(t *testing.T) {
 		a, b, c := xptr.Ptr(1), xptr.Ptr(2), xptr.Ptr(3)
 		if got := Contains([]*int{a, b, c}, a); !reflect.DeepEqual(got, true) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Contains()#6", func(t *testing.T) {
+	t.Run("Contains:ptr:not_found", func(t *testing.T) {
 		a, b, c := xptr.Ptr(1), xptr.Ptr(2), xptr.Ptr(3)
 		if got := Contains([]*int{a, b, c}, xptr.Ptr(1)); !reflect.DeepEqual(got, false) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Contains()#7", func(t *testing.T) {
+	t.Run("ContainsWithDeepEqual:ptr:found", func(t *testing.T) {
 		a, b, c := xptr.Ptr(1), xptr.Ptr(2), xptr.Ptr(3)
 		if got := ContainsWithDeepEqual([]*int{a, b, c}, xptr.Ptr(1)); !reflect.DeepEqual(got, true) {
 			t.Errorf("unittest error: got = %v", got)
@@ -98,29 +98,25 @@ func TestContain(t *testing.T) {
 }
 
 func TestDistinct(t *testing.T) {
-	t.Run("Distinct()#1", func(t *testing.T) {
-		if got := Distinct([]int{1, 1, 2, 3, 2}, func(a, b int) bool { return a == b }); !reflect.DeepEqual(got, []int{1, 2, 3}) {
+	t.Run("Distinct:str", func(t *testing.T) {
+		if got := Distinct([]string{"1", "1", "2", "3", "2"}); !reflect.DeepEqual(got, []string{"1", "2", "3"}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("DistinctByKey()#1", func(t *testing.T) {
-		if got := DistinctByKey([]int{1, 1, 2, 3, 2}, func(a int) int { return a }); !reflect.DeepEqual(got, []int{1, 2, 3}) {
+	t.Run("Distinct:int", func(t *testing.T) {
+		if got := Distinct([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, []int{1, 2, 3}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("DistinctStr()#1", func(t *testing.T) {
-		if got := DistinctStr([]string{"1", "1", "2", "3", "2"}); !reflect.DeepEqual(got, []string{"1", "2", "3"}) {
-			t.Errorf("unittest error: got = %v", got)
-		}
-	})
-	t.Run("DistinctNum()#1", func(t *testing.T) {
-		if got := DistinctNum([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, []int{1, 2, 3}) {
-			t.Errorf("unittest error: got = %v", got)
-		}
-	})
-	t.Run("DistinctPtr()#1", func(t *testing.T) {
+	t.Run("Distinct:ptr", func(t *testing.T) {
 		a, b, c, d := xptr.Ptr(1), xptr.Ptr(2), xptr.Ptr(3), xptr.Ptr(3)
-		if got := DistinctPtr([]*int{a, a, b, c, b, d}); !reflect.DeepEqual(got, []*int{a, b, c, d}) {
+		if got := Distinct([]*int{a, a, b, c, b, d}); !reflect.DeepEqual(got, []*int{a, b, c, d}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("DistinctWithDeepEqual:ptr", func(t *testing.T) {
+		a, b, c, d := xptr.Ptr(1), xptr.Ptr(2), xptr.Ptr(3), xptr.Ptr(3)
+		if got := DistinctWithDeepEqual([]*int{a, a, b, c, b, d}); !reflect.DeepEqual(got, []*int{a, b, c}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
