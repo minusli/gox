@@ -15,10 +15,10 @@ func TestMGet(t *testing.T) {
 		for i := 0; i < 100000; i++ {
 			ids = append(ids, i)
 		}
-		want := xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a })
+		want := xslice.ToMap(ids, func(a int) (int, *int) { return a, &a })
 
 		got, err := MGet(ctx, ids, func(ctx context.Context, ids []int) (map[int]*int, error) {
-			return xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a }), nil
+			return xslice.ToMap(ids, func(a int) (int, *int) { return a, &a }), nil
 		})
 
 		if err != nil {
@@ -35,10 +35,10 @@ func TestMGet(t *testing.T) {
 		for i := 0; i < 100000; i++ {
 			ids = append(ids, i)
 		}
-		want := xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a })
+		want := xslice.ToMap(ids, func(a int) (int, *int) { return a, &a })
 
 		got, err := MGet(ctx, ids, func(ctx context.Context, ids []int) (map[int]*int, error) {
-			return xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a }), nil
+			return xslice.ToMap(ids, func(a int) (int, *int) { return a, &a }), nil
 		}, WithChunk(2))
 
 		if err != nil {
@@ -55,10 +55,10 @@ func TestMGet(t *testing.T) {
 		for i := 0; i < 100000; i++ {
 			ids = append(ids, i)
 		}
-		want := xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a })
+		want := xslice.ToMap(ids, func(a int) (int, *int) { return a, &a })
 
 		got, err := MGet(ctx, ids, func(ctx context.Context, ids []int) (map[int]*int, error) {
-			return xslice.ReduceMap(ids, func(a int) (int, *int) { return a, &a }), nil
+			return xslice.ToMap(ids, func(a int) (int, *int) { return a, &a }), nil
 		}, WithChunk(2), WithParallel())
 
 		if err != nil {

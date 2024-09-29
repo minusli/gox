@@ -1,11 +1,7 @@
 package xslice
 
-import (
-	"github.com/minusli/gox/xtype"
-)
-
-// Intersect 切片交集
-func Intersect[T any](items []T, others []T, eq func(a, b T) bool) []T {
+// IntersectAny 切片交集
+func IntersectAny[T any](items []T, others []T, eq func(a, b T) bool) []T {
 	var ret []T
 
 	for _, item := range items {
@@ -17,13 +13,13 @@ func Intersect[T any](items []T, others []T, eq func(a, b T) bool) []T {
 	return ret
 }
 
-// IntersectByKey 切片交集，使用 map 加速计算
-func IntersectByKey[T any, K comparable](items []T, others []T, keyFn func(a T) K) []T {
+// Intersect 切片交集，使用 map 加速计算
+func Intersect[T comparable](items []T, others []T) []T {
 	var ret []T
 
-	m := ReduceMap(others, func(a T) (K, T) { return keyFn(a), a })
+	m := ToMap(others, func(a T) (T, bool) { return a, true })
 	for _, item := range items {
-		if _, exists := m[keyFn(item)]; exists {
+		if m[item] {
 			ret = append(ret, item)
 		}
 	}
@@ -41,8 +37,8 @@ func Union[T any](items []T, others ...[]T) []T {
 	return items
 }
 
-// Diff 切片差集
-func Diff[T any](items []T, others []T, eq func(a, b T) bool) []T {
+// DiffAny 切片差集
+func DiffAny[T any](items []T, others []T, eq func(a, b T) bool) []T {
 	var ret []T
 
 	for _, item := range items {
@@ -54,32 +50,16 @@ func Diff[T any](items []T, others []T, eq func(a, b T) bool) []T {
 	return ret
 }
 
-// DiffByKey 切片交集，使用 map 加速计算
-func DiffByKey[T any, K comparable](items []T, others []T, keyFn func(a T) K) []T {
+// Diff 切片交集，使用 map 加速计算
+func Diff[T comparable](items []T, others []T) []T {
 	var ret []T
 
-	m := ReduceMap(others, func(a T) (K, T) { return keyFn(a), a })
+	m := ToMap(others, func(a T) (T, bool) { return a, true })
 	for _, item := range items {
-		if _, exists := m[keyFn(item)]; !exists {
+		if !m[item] {
 			ret = append(ret, item)
 		}
 	}
 
 	return ret
-}
-
-func IntersectStr[T xtype.String](items []T, others []T) []T {
-	return IntersectByKey(items, others, func(a T) T { return a })
-}
-
-func IntersectNum[T xtype.Number](items []T, others []T) []T {
-	return IntersectByKey(items, others, func(a T) T { return a })
-}
-
-func DiffStr[T xtype.String](items []T, others []T) []T {
-	return DiffByKey(items, others, func(a T) T { return a })
-}
-
-func DiffNum[T xtype.Number](items []T, others []T) []T {
-	return DiffByKey(items, others, func(a T) T { return a })
 }

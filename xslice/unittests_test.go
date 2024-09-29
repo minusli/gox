@@ -9,48 +9,38 @@ import (
 )
 
 func TestCal(t *testing.T) {
-	t.Run("Intersect()#1", func(t *testing.T) {
-		if got := Intersect([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}, func(a, b int) bool { return a == b }); !reflect.DeepEqual(got, []int{2, 2, 3, 3}) {
+	t.Run("IntersectAny:int", func(t *testing.T) {
+		if got := IntersectAny([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}, func(a, b int) bool { return a == b }); !reflect.DeepEqual(got, []int{2, 2, 3, 3}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("IntersectByKey()#1", func(t *testing.T) {
-		if got := IntersectByKey([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}, func(a int) int { return a }); !reflect.DeepEqual(got, []int{2, 2, 3, 3}) {
+	t.Run("Intersect:int", func(t *testing.T) {
+		if got := Intersect([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}); !reflect.DeepEqual(got, []int{2, 2, 3, 3}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Union()#1", func(t *testing.T) {
+	t.Run("Intersect:str", func(t *testing.T) {
+		if got := Intersect([]string{"1", "1", "2", "2", "3", "3"}, []string{"2", "3", "3", "4", "4", "5", "5"}); !reflect.DeepEqual(got, []string{"2", "2", "3", "3"}) {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("Union:int", func(t *testing.T) {
 		if got := Union([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}); !reflect.DeepEqual(got, []int{1, 1, 2, 2, 3, 3, 2, 3, 3, 4, 4, 5, 5}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Diff()#1", func(t *testing.T) {
-		if got := Diff([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}, func(a, b int) bool { return a == b }); !reflect.DeepEqual(got, []int{1, 1}) {
+	t.Run("DiffAny:int", func(t *testing.T) {
+		if got := DiffAny([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}, func(a, b int) bool { return a == b }); !reflect.DeepEqual(got, []int{1, 1}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("DiffByKey()#1", func(t *testing.T) {
-		if got := DiffByKey([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}, func(a int) int { return a }); !reflect.DeepEqual(got, []int{1, 1}) {
+	t.Run("Diff:int", func(t *testing.T) {
+		if got := Diff([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}); !reflect.DeepEqual(got, []int{1, 1}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("IntersectStr()#1", func(t *testing.T) {
-		if got := IntersectStr([]string{"1", "1", "2", "2", "3", "3"}, []string{"2", "3", "3", "4", "4", "5", "5"}); !reflect.DeepEqual(got, []string{"2", "2", "3", "3"}) {
-			t.Errorf("unittest error: got = %v", got)
-		}
-	})
-	t.Run("IntersectNum()#1", func(t *testing.T) {
-		if got := IntersectNum([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}); !reflect.DeepEqual(got, []int{2, 2, 3, 3}) {
-			t.Errorf("unittest error: got = %v", got)
-		}
-	})
-	t.Run("DiffStr()#1", func(t *testing.T) {
-		if got := DiffStr([]string{"1", "1", "2", "2", "3", "3"}, []string{"2", "3", "3", "4", "4", "5", "5"}); !reflect.DeepEqual(got, []string{"1", "1"}) {
-			t.Errorf("unittest error: got = %v", got)
-		}
-	})
-	t.Run("DiffNum()#1", func(t *testing.T) {
-		if got := DiffNum([]int{1, 1, 2, 2, 3, 3}, []int{2, 3, 3, 4, 4, 5, 5}); !reflect.DeepEqual(got, []int{1, 1}) {
+	t.Run("Diff:str", func(t *testing.T) {
+		if got := Diff([]string{"1", "1", "2", "2", "3", "3"}, []string{"2", "3", "3", "4", "4", "5", "5"}); !reflect.DeepEqual(got, []string{"1", "1"}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
@@ -292,22 +282,22 @@ func TestMap(t *testing.T) {
 }
 
 func TestReduce(t *testing.T) {
-	t.Run("Reduce()#1", func(t *testing.T) {
-		if got := Reduce([]int{1, 1, 2, 3, 2}, func(a int, result int) int { return a*a + result }, 0); !reflect.DeepEqual(got, 19) {
+	t.Run("ReduceAny:sum(a^2)", func(t *testing.T) {
+		if got := ReduceAny([]int{1, 1, 2, 3, 2}, func(a int, result int) int { return a*a + result }, 0); !reflect.DeepEqual(got, 19) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("ReduceMap()#1", func(t *testing.T) {
-		if got := ReduceMap([]int{1, 1, 2, 3, 2}, func(a int) (int, int) { return a, a }); !reflect.DeepEqual(got, map[int]int{1: 1, 2: 2, 3: 3}) {
+	t.Run("ToMap:int->selt", func(t *testing.T) {
+		if got := ToMap([]int{1, 1, 2, 3, 2}, func(a int) (int, int) { return a, a }); !reflect.DeepEqual(got, map[int]int{1: 1, 2: 2, 3: 3}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("ReduceMapSelf()#1", func(t *testing.T) {
-		if got := ReduceMapSelf([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, map[int]int{1: 1, 2: 2, 3: 3}) {
+	t.Run("ToMapSelf:int", func(t *testing.T) {
+		if got := ToMapSelf([]int{1, 1, 2, 3, 2}); !reflect.DeepEqual(got, map[int]int{1: 1, 2: 2, 3: 3}) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Sum()", func(t *testing.T) {
+	t.Run("Sum", func(t *testing.T) {
 		if got := Sum([]int{}); !reflect.DeepEqual(got, 0) {
 			t.Errorf("unittest error: got = %v", got)
 		}
@@ -315,7 +305,7 @@ func TestReduce(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Join()#1", func(t *testing.T) {
+	t.Run("Join", func(t *testing.T) {
 		if got := Join([]int{1, 1, 2, 3, 2}, "-"); !reflect.DeepEqual(got, "1-1-2-3-2") {
 			t.Errorf("unittest 1 error: got = %v", got)
 		}
@@ -324,7 +314,7 @@ func TestReduce(t *testing.T) {
 			t.Errorf("unittest 2 error: got = %v", got)
 		}
 	})
-	t.Run("Max()", func(t *testing.T) {
+	t.Run("Max", func(t *testing.T) {
 		if got := Max([]int{}); !reflect.DeepEqual(got, 0) {
 			t.Errorf("unittest error: got = %v", got)
 		}
@@ -335,7 +325,7 @@ func TestReduce(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Min()", func(t *testing.T) {
+	t.Run("Min", func(t *testing.T) {
 		if got := Min([]int{}); !reflect.DeepEqual(got, 0) {
 			t.Errorf("unittest error: got = %v", got)
 		}
@@ -346,7 +336,7 @@ func TestReduce(t *testing.T) {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
-	t.Run("Avg()", func(t *testing.T) {
+	t.Run("Avg", func(t *testing.T) {
 		if got := Avg([]int{}); !reflect.DeepEqual(got, 0.0) {
 			t.Errorf("unittest error: got = %v", got)
 		}
