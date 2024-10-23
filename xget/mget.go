@@ -9,7 +9,7 @@ import (
 
 type MGetOption struct {
 	Chunk    int
-	Parallel bool
+	Parallel int
 }
 
 func WithChunk(chunk int) func(*MGetOption) {
@@ -19,9 +19,9 @@ func WithChunk(chunk int) func(*MGetOption) {
 
 }
 
-func WithParallel() func(*MGetOption) {
+func WithParallel(max int) func(*MGetOption) {
 	return func(option *MGetOption) {
-		option.Parallel = true
+		option.Parallel = max
 	}
 }
 
@@ -35,7 +35,7 @@ func MGet[ID comparable, T any](ctx context.Context, ids []ID, mget func(context
 		return mget(ctx, ids)
 	}
 
-	if option.Parallel { // 分片&&并发
+	if option.Parallel > 0 { // 分片&&并发
 		result := xsync.Map[ID, *T]{}
 		wg := xsync.WaitGroup{}
 		for _, chunk := range xslice.Chunk(ids, option.Chunk) {

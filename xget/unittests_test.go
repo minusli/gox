@@ -59,7 +59,7 @@ func TestMGet(t *testing.T) {
 
 		got, err := MGet(ctx, ids, func(ctx context.Context, ids []int) (map[int]*int, error) {
 			return xslice.ToMap(ids, func(a int) (int, *int) { return a, &a }), nil
-		}, WithChunk(2), WithParallel())
+		}, WithChunk(2), WithParallel(50))
 
 		if err != nil {
 			t.Errorf("TestMGet#3 err = %v", err)

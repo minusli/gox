@@ -5,21 +5,26 @@ import (
 )
 
 type WaitGroup struct {
-	Parallel chan bool
+	parallel chan bool
 	wg       sync.WaitGroup
 	err      error
 }
 
+func (wg *WaitGroup) WithParallel(max int) *WaitGroup {
+	wg.parallel = make(chan bool, max)
+	return wg
+}
+
 func (wg *WaitGroup) Go(task func() error) *WaitGroup {
-	if wg.Parallel != nil {
-		wg.Parallel <- true
+	if wg.parallel != nil {
+		wg.parallel <- true
 	}
 	wg.wg.Add(1)
 	go func() {
 		defer func() {
 			wg.wg.Done()
-			if wg.Parallel != nil {
-				<-wg.Parallel
+			if wg.parallel != nil {
+				<-wg.parallel
 			}
 		}()
 
