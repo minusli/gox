@@ -38,6 +38,7 @@ func MGet[ID comparable, T any](ctx context.Context, ids []ID, mget func(context
 	if option.Parallel > 0 { // 分片&&并发
 		result := xsync.Map[ID, *T]{}
 		wg := xsync.WaitGroup{}
+		wg.WithParallel(option.Parallel)
 		for _, chunk := range xslice.Chunk(ids, option.Chunk) {
 			_chunk := chunk
 			wg.Go(func() error {
