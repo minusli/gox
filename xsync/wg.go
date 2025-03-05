@@ -1,6 +1,8 @@
 package xsync
 
 import (
+	"errors"
+	"fmt"
 	"sync"
 )
 
@@ -25,6 +27,9 @@ func (wg *WaitGroup) Go(task func() error) *WaitGroup {
 			wg.wg.Done()
 			if wg.parallel != nil {
 				<-wg.parallel
+			}
+			if p := recover(); p != nil {
+				wg.err = errors.New(fmt.Sprintf("panic: recover=%v", p))
 			}
 		}()
 
