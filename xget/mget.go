@@ -52,7 +52,7 @@ func MGet[ID comparable, T any](ctx context.Context, ids []ID, mget func(context
 			})
 		}
 		if err := wg.Wait(); err != nil {
-			return nil, err
+			return result.ToMap(), err
 		}
 
 		return result.ToMap(), nil
