@@ -17,6 +17,6 @@ func (s *Slice[T]) Append(items ...T) {
 
 func (s *Slice[T]) ToSlice() []T {
 	s.mutex.Lock()
-	s.mutex.Unlock()
+	defer s.mutex.Unlock()
 	return append([]T{}, s.data...)
 }
