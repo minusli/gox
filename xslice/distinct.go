@@ -25,7 +25,16 @@ func DistinctAny[T any](items []T, eq func(a, b T) bool) []T {
 }
 
 func Distinct[T comparable](items []T) []T {
-	return DistinctAny(items, func(a, b T) bool { return a == b })
+	var ret []T
+	exists := map[T]bool{}
+	for _, item := range items {
+		if !exists[item] {
+			ret = append(ret, item)
+			exists[item] = true
+		}
+	}
+
+	return ret
 }
 
 func DistinctWithDeepEqual[T any](items []T) []T {
