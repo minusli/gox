@@ -48,12 +48,13 @@ func MGet[ID comparable, T any](ctx context.Context, ids []ID, mget func(context
 		result := map[ID]*T{}
 		for _, chunk := range xslice.Chunk(ids, option.Chunk) {
 			r, err := mget(ctx, chunk)
-			if err != nil {
-				return result, err
-			}
 
 			for k, v := range r {
 				result[k] = v
+			}
+
+			if err != nil {
+				return result, err
 			}
 		}
 		return result, nil
@@ -67,12 +68,8 @@ func MGet[ID comparable, T any](ctx context.Context, ids []ID, mget func(context
 		_chunk := chunk
 		wg.Go(func() error {
 			r, err := mget(ctx, _chunk)
-			if err != nil {
-				return err
-			}
-
 			result.Puts(r)
-			return nil
+			return err
 		})
 	}
 	if err := wg.Wait(); err != nil {

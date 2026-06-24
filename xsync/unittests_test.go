@@ -26,19 +26,75 @@ func TestWaitGroup(t *testing.T) {
 		}
 	})
 	t.Run("WaitGroup()#2", func(t *testing.T) {
-		count := int32(0)
 		wg := WaitGroup{}
-		for i := 0; i < 1000; i++ {
+		for i := 0; i < 999; i++ {
 			wg.Go(func() error {
 				time.Sleep(1 * time.Second)
-				atomic.AddInt32(&count, 1)
-				if count == 999 {
-					return errors.New("999")
-				}
 				return nil
 			})
 		}
-		if got := wg.Wait(); !reflect.DeepEqual(got, errors.New("999")) {
+
+		wg.Go(func() error {
+			return errors.New("999")
+		})
+
+		if got := wg.Wait(); got == nil || got.Error() != "999" {
+			t.Errorf("unittest error: got = %v", got)
+		}
+	})
+	t.Run("WaitGroup()#3", func(t *testing.T) {
+		for _, parallel := range []int{0, -1} {
+			count := int32(0)
+			wg := (&WaitGroup{}).WithParallel(parallel)
+			for i := 0; i < 10; i++ {
+				wg.Go(func() error {
+					atomic.AddInt32(&count, 1)
+					return nil
+				})
+			}
+
+			_ = wg.Wait()
+			if got := atomic.LoadInt32(&count); !reflect.DeepEqual(got, int32(10)) {
+				t.Errorf("unittest error: parallel=%v, got = %v", parallel, got)
+			}
+		}
+	})
+	t.Run("WaitGroup()#4", func(t *testing.T) {
+		wg := (&WaitGroup{}).WithParallel(1)
+
+		started := make(chan struct{})
+		release := make(chan struct{})
+		done := make(chan struct{})
+
+		wg.Go(func() error {
+			close(started)
+			<-release
+			return nil
+		})
+
+		<-started
+
+		go func() {
+			wg.Go(func() error { return nil })
+			close(done)
+		}()
+
+		select {
+		case <-done:
+		case <-time.After(100 * time.Millisecond):
+			t.Fatalf("unittest error: Go() blocked before task registration")
+		}
+
+		close(release)
+		_ = wg.Wait()
+	})
+	t.Run("WaitGroup()#5", func(t *testing.T) {
+		wg := WaitGroup{}
+		wg.Go(func() error {
+			panic("boom")
+		})
+
+		if got := wg.Wait(); got == nil || got.Error() != "panic: recover=boom" {
 			t.Errorf("unittest error: got = %v", got)
 		}
 	})
